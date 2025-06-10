@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catholic Faith Trivia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .game-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: linear-gradient(90deg, #ffd700, #ffed4e, #ffd700);
+        }
+
+        h1 {
+            color: #1e3c72;
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .score-section {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+
+        .score-item {
+            font-weight: bold;
+            color: #1e3c72;
+        }
+
+        .question-section {
+            margin-bottom: 2rem;
+        }
+
+        .question {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: #2c3e50;
+            line-height: 1.4;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #ffd700;
+        }
+
+        .options {
+            display: grid;
+            gap: 0.8rem;
+            margin-bottom: 2rem;
+        }
+
+        .option {
+            background: #ffffff;
+            border: 2px solid #e9ecef;
+            padding: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            text-align: left;
+        }
+
+        .option:hover {
+            border-color: #1e3c72;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(30, 60, 114, 0.15);
+        }
+
+        .option.correct {
+            background: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+
+        .option.incorrect {
+            background: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+
+        .option.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #1e3c72, #2a5298);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(30, 60, 114, 0.3);
+        }
+
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .final-score {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #1e3c72;
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #28a745, #20c997);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+
+        .cross-icon {
+            font-size: 2rem;
+            color: #ffd700;
+            margin-bottom: 1rem;
+        }
+
+        @media (max-width: 480px) {
+            .game-container {
+                padding: 1.5rem;
+            }
+            
+            h1 {
+                font-size: 1.5rem;
+            }
+            
+            .question {
+                font-size: 1.1rem;
+                min-height: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="cross-icon">✝</div>
+        <h1>Catholic Faith Trivia</h1>
+        
+        <div id="gameArea">
+            <div class="score-section">
+                <div class="score-item">Question: <span id="currentQuestion">1</span>/10</div>
+                <div class="score-item">Score: <span id="score">0</span></div>
+            </div>
+            
+            <div class="question-section">
+                <div class="question" id="question"></div>
+            </div>
+            
+            <div class="options" id="options"></div>
+            
+            <button class="next-btn" id="nextBtn" onclick="nextQuestion()" disabled>Next Question</button>
+        </div>
+        
+        <div id="finalScreen" style="display: none;">
+            <div class="final-score">
+                Your Final Score: <span id="finalScore"></span>/10
+            </div>
+            <p id="finalMessage"></p>
+            <button class="restart-btn" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "How many books are in the Catholic Bible?",
+                options: ["66", "73", "76", "81"],
+                correct: 1
+            },
+            {
+                question: "What are the four Gospel books?",
+                options: ["Matthew, Mark, Luke, John", "Matthew, Mark, Acts, Romans", "Genesis, Exodus, Matthew, Mark", "Luke, John, Acts, Revelation"],
+                correct: 0
+            },
+            {
+                question: "How many sacraments are there in the Catholic Church?",
+                options: ["5", "6", "7", "8"],
+                correct: 2
+            },
+            {
+                question: "What is the first book of the Bible?",
+                options: ["Exodus", "Genesis", "Leviticus", "Numbers"],
+                correct: 1
+            },
+            {
+                question: "Who was the first Pope?",
+                options: ["St. Paul", "St. Peter", "St. John", "St. James"],
+                correct: 1
+            },
+            {
+                question: "What prayer begins with 'Our Father'?",
+                options: ["The Hail Mary", "The Lord's Prayer", "The Apostles' Creed", "The Glory Be"],
+                correct: 1
+            },
+            {
+                question: "In which city is the Vatican located?",
+                options: ["Naples", "Milan", "Rome", "Florence"],
+                correct: 2
+            },
+            {
+                question: "What does 'Catholic' mean?",
+                options: ["Holy", "Universal", "Sacred", "Divine"],
+                correct: 1
+            },
+            {
+                question: "How many decades are in a traditional Rosary?",
+                options: ["3", "4", "5", "6"],
+                correct: 2
+            },
+            {
+                question: "What is the central celebration of the Catholic Mass?",
+                options: ["The Reading", "The Homily", "The Eucharist", "The Collection"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let answered = false;
+
+        function loadQuestion() {
+            const question = questions[currentQuestionIndex];
+            document.getElementById('question').textContent = question.question;
+            document.getElementById('currentQuestion').textContent = currentQuestionIndex + 1;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const optionElement = document.createElement('div');
+                optionElement.className = 'option';
+                optionElement.textContent = option;
+                optionElement.onclick = () => selectAnswer(index);
+                optionsContainer.appendChild(optionElement);
+            });
+            
+            document.getElementById('nextBtn').disabled = true;
+            answered = false;
+        }
+
+        function selectAnswer(selectedIndex) {
+            if (answered) return;
+            
+            answered = true;
+            const question = questions[currentQuestionIndex];
+            const options = document.querySelectorAll('.option');
+            
+            options.forEach((option, index) => {
+                option.classList.add('disabled');
+                if (index === question.correct) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            if (selectedIndex === question.correct) {
+                score++;
+                document.getElementById('score').textContent = score;
+            }
+            
+            document.getElementById('nextBtn').disabled = false;
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            
+            if (currentQuestionIndex < questions.length) {
+                loadQuestion();
+            } else {
+                showFinalScore();
+            }
+        }
+
+        function showFinalScore() {
+            document.getElementById('gameArea').style.display = 'none';
+            document.getElementById('finalScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+            
+            let message = '';
+            if (score >= 9) {
+                message = "Excellent! You have a strong knowledge of Catholic faith! ✝️";
+            } else if (score >= 7) {
+                message = "Great job! You know your Catholic teachings well! 🙏";
+            } else if (score >= 5) {
+                message = "Good effort! Keep studying and growing in faith! 📖";
+            } else {
+                message = "Keep learning about our beautiful Catholic faith! 💒";
+            }
+            
+            document.getElementById('finalMessage').textContent = message;
+        }
+
+        function restartGame() {
+            currentQuestionIndex = 0;
+            score = 0;
+            answered = false;
+            document.getElementById('score').textContent = score;
+            document.getElementById('gameArea').style.display = 'block';
+            document.getElementById('finalScreen').style.display = 'none';
+            loadQuestion();
+        }
+
+        // Initialize the game
+        loadQuestion();
+    </script>
+</body>
+</html>
