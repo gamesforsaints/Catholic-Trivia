@@ -36,6 +36,6 @@ Simply open the game in any web browser and start playing!
 
 ### Embedding in Your Website
 ```html
-<iframe src="https://yourusername.github.io/catholic-trivia-game/" 
+<iframe src="https://gamesforsaints.github.io/catholic-trivia/" 
         width="100%" height="700px" frameborder="0">
 </iframe>
